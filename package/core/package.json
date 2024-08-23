@@ -1,0 +1,34 @@
+{
+  "name": "viajs-core",
+  "version": "0.0.1",
+  "type": "module",
+  "main": "index.ts",
+  "scripts": {
+    "build": "yarn clean && yarn build:tsc && yarn build:js",
+    "build:tsc": "yarn tsc",
+    "build:js": "node build.js",
+    "clean": "rm -rf dist"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "license": "MIT",
+  "dependencies": {
+    "deepmerge": "^4.3.1",
+    "immer": "^10.1.1",
+    "lodash": "^4.17.21",
+    "nanoid": "^5.0.7"
+  },
+  "devDependencies": {
+    "@types/deepmerge": "^2.2.0",
+    "@types/lodash": "^4.17.6",
+    "@typescript-eslint/eslint-plugin": "^7.2.0",
+    "@typescript-eslint/parser": "^7.2.0",
+    "eslint": "^8.57.0",
+    "typescript": "^5.4.3"
+  }
+}
