@@ -1,7 +1,7 @@
 import { Inferred, Parser, ParserTree } from "../input";
 import { Next } from "../store";
 import { Falsy } from "../util/falsy";
-import { hashKeys, RawKey } from "../util/hashKey";
+import { hashKeys, Key, RawKey } from "../util/hashKey";
 
 export type ToArgs<I> = I extends void ? never[] : [I];
 export type To<I, O> = (...args: ToArgs<I>) => O | Promise<O>;
@@ -22,14 +22,14 @@ export type StoredIntent<I, O> = {
   isWorking: boolean;
 };
 
+export type Intent<P extends ParserTree<unknown>, O> = Omit<IntentParams<P, O>, "key"> & { key: Key };
+
 export const Intent =
   <Deps extends unknown[] = never[], P extends ParserTree<unknown> = () => void, O = unknown>(
     params: (...deps: Deps) => IntentParams<P, O>,
   ) =>
-  (...args: Deps) => {
+  (...args: Deps): Intent<P, O> => {
     const intent = params(...args);
     const key = hashKeys(intent.key);
     return { ...intent, key };
   };
-
-export type Intent<P extends ParserTree<unknown>, O> = ReturnType<ReturnType<typeof Intent<unknown[], P, O>>>;
