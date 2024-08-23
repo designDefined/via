@@ -1,13 +1,17 @@
 {
-  "name": "via",
+  "name": "viajs",
   "packageManager": "yarn@4.3.1",
   "workspaces": [
     "package/**/*",
     "demo"
   ],
+  "scripts": {
+    "demo": "yarn workspace demo",
+    "core": "yarn workspace viajs-core"
+  },
   "devDependencies": {
+    "esbuild": "^0.23.1",
     "eslint": "^8.57.0",
-    "prettier": "^3.2.5",
-    "typescript": "^5.4.3"
+    "prettier": "^3.2.5"
   }
 }
