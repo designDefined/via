@@ -1,0 +1,13 @@
+{
+  "name": "via",
+  "packageManager": "yarn@4.3.1",
+  "workspaces": [
+    "package/**/*",
+    "demo"
+  ],
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.5",
+    "typescript": "^5.4.3"
+  }
+}
