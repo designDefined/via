@@ -104,5 +104,5 @@ export const update = <P extends ParserTree<unknown>>(
     ? mergeFunction(prev.current, setter)
     : mergePartial(prev.state, prev.current, setter);
   const newState = updateStateTree(prev.state, newCurrent, config);
-  return { ...prev, state: newState, current: newCurrent };
+  return { ...prev, state: newState, current: newCurrent as InferredInitial<P> };
 };
