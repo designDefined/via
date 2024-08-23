@@ -605,6 +605,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fluid/core@workspace:temp/fluid/core":
+  version: 0.0.0-use.local
+  resolution: "@fluid/core@workspace:temp/fluid/core"
+  dependencies:
+    "@types/react": "npm:^18.2.66"
+    "@types/react-dom": "npm:^18.2.22"
+    "@typescript-eslint/eslint-plugin": "npm:^7.2.0"
+    "@typescript-eslint/parser": "npm:^7.2.0"
+    "@vitejs/plugin-react": "npm:^4.2.1"
+    eslint: "npm:^8.57.0"
+    eslint-plugin-react-hooks: "npm:^4.6.0"
+    eslint-plugin-react-refresh: "npm:^0.4.6"
+    typescript: "npm:^5.2.2"
+    vite: "npm:^5.2.0"
+    vite-tsconfig-paths: "npm:^4.3.2"
+  peerDependencies:
+    react: ^18.2.0
+    react-dom: ^18.2.0
+  languageName: unknown
+  linkType: soft
+
 "@humanwhocodes/config-array@npm:^0.11.14":
   version: 0.11.14
   resolution: "@humanwhocodes/config-array@npm:0.11.14"
@@ -1382,7 +1403,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:4, debug@npm:^4.1.0, debug@npm:^4.3.1, debug@npm:^4.3.2, debug@npm:^4.3.4":
+"debug@npm:4, debug@npm:^4.1.0, debug@npm:^4.1.1, debug@npm:^4.3.1, debug@npm:^4.3.2, debug@npm:^4.3.4":
   version: 4.3.6
   resolution: "debug@npm:4.3.6"
   dependencies:
@@ -1424,7 +1445,8 @@ __metadata:
     react-dom: "npm:^18.2.0"
     react-router-dom: "npm:^6.25.1"
     typescript: "npm:^5.2.2"
-    viajs-core: "workspace:^"
+    viajs-core: "npm:^0.1.3"
+    viajs-react: "npm:^0.1.3"
     vite: "npm:^5.2.0"
     zod: "npm:^3.23.8"
   languageName: unknown
@@ -1496,6 +1518,18 @@ __metadata:
   version: 2.0.3
   resolution: "err-code@npm:2.0.3"
   checksum: 10/1d20d825cdcce8d811bfbe86340f4755c02655a7feb2f13f8c880566d9d72a3f6c92c192a6867632e490d6da67b678271f46e01044996a6443e870331100dfdd
+  languageName: node
+  linkType: hard
+
+"esbuild-node-externals@npm:^1.14.0":
+  version: 1.14.0
+  resolution: "esbuild-node-externals@npm:1.14.0"
+  dependencies:
+    find-up: "npm:^5.0.0"
+    tslib: "npm:^2.4.1"
+  peerDependencies:
+    esbuild: 0.12 - 0.23
+  checksum: 10/cc7a0a7db949176156e845d1f44839c63a2f9871a3a669643c31727d30c8cc30168fc462849fc443825a6ab68529d8ecf0a36032b469a0d1c392f62dcd29006a
   languageName: node
   linkType: hard
 
@@ -2041,6 +2075,13 @@ __metadata:
     merge2: "npm:^1.4.1"
     slash: "npm:^3.0.0"
   checksum: 10/288e95e310227bbe037076ea81b7c2598ccbc3122d87abc6dab39e1eec309aa14f0e366a98cdc45237ffcfcbad3db597778c0068217dcb1950fef6249104e1b1
+  languageName: node
+  linkType: hard
+
+"globrex@npm:^0.1.2":
+  version: 0.1.2
+  resolution: "globrex@npm:0.1.2"
+  checksum: 10/81ce62ee6f800d823d6b7da7687f841676d60ee8f51f934ddd862e4057316d26665c4edc0358d4340a923ac00a514f8b67c787e28fe693aae16350f4e60d55e9
   languageName: node
   linkType: hard
 
@@ -3160,6 +3201,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tsconfck@npm:^3.0.3":
+  version: 3.1.1
+  resolution: "tsconfck@npm:3.1.1"
+  peerDependencies:
+    typescript: ^5.0.0
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  bin:
+    tsconfck: bin/tsconfck.js
+  checksum: 10/a4456577f540212516d7eb530005893739aadd6da00787914a8ed9aa19c3f2f306b8912920aa440b9b8978f10c9dadbd062b8c2a2f0ff1f6c2d4272b5be2ef34
+  languageName: node
+  linkType: hard
+
+"tslib@npm:^2.4.1":
+  version: 2.7.0
+  resolution: "tslib@npm:2.7.0"
+  checksum: 10/9a5b47ddac65874fa011c20ff76db69f97cf90c78cff5934799ab8894a5342db2d17b4e7613a087046bc1d133d21547ddff87ac558abeec31ffa929c88b7fce6
+  languageName: node
+  linkType: hard
+
 "type-check@npm:^0.4.0, type-check@npm:~0.4.0":
   version: 0.4.0
   resolution: "type-check@npm:0.4.0"
@@ -3176,7 +3238,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5.2.2, typescript@npm:^5.4.3":
+"typescript@npm:^5.2.2, typescript@npm:^5.5.4":
   version: 5.5.4
   resolution: "typescript@npm:5.5.4"
   bin:
@@ -3186,7 +3248,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A^5.2.2#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.4.3#optional!builtin<compat/typescript>":
+"typescript@patch:typescript@npm%3A^5.2.2#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.5.4#optional!builtin<compat/typescript>":
   version: 5.5.4
   resolution: "typescript@patch:typescript@npm%3A5.5.4#optional!builtin<compat/typescript>::version=5.5.4&hash=379a07"
   bin:
@@ -3237,7 +3299,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"viajs-core@workspace:^, viajs-core@workspace:package/core":
+"viajs-core@npm:^0.1.3, viajs-core@workspace:package/core":
   version: 0.0.0-use.local
   resolution: "viajs-core@workspace:package/core"
   dependencies:
@@ -3250,7 +3312,30 @@ __metadata:
     immer: "npm:^10.1.1"
     lodash: "npm:^4.17.21"
     nanoid: "npm:^5.0.7"
-    typescript: "npm:^5.4.3"
+    typescript: "npm:^5.5.4"
+  languageName: unknown
+  linkType: soft
+
+"viajs-react@npm:^0.1.3, viajs-react@workspace:package/react":
+  version: 0.0.0-use.local
+  resolution: "viajs-react@workspace:package/react"
+  dependencies:
+    "@types/lodash": "npm:^4.17.6"
+    "@typescript-eslint/eslint-plugin": "npm:^7.2.0"
+    "@typescript-eslint/parser": "npm:^7.2.0"
+    esbuild: "npm:^0.23.1"
+    esbuild-node-externals: "npm:^1.14.0"
+    eslint: "npm:^8.57.0"
+    eslint-plugin-react-hooks: "npm:^4.6.0"
+    eslint-plugin-react-refresh: "npm:^0.4.6"
+    immer: "npm:^10.1.1"
+    lodash: "npm:^4.17.21"
+    nanoid: "npm:^5.0.7"
+    typescript: "npm:^5.5.4"
+  peerDependencies:
+    react: ">=18.0.0"
+    react-dom: ">=18.0.0"
+    viajs-core: ">=0.1.3"
   languageName: unknown
   linkType: soft
 
@@ -3263,6 +3348,22 @@ __metadata:
     prettier: "npm:^3.2.5"
   languageName: unknown
   linkType: soft
+
+"vite-tsconfig-paths@npm:^4.3.2":
+  version: 4.3.2
+  resolution: "vite-tsconfig-paths@npm:4.3.2"
+  dependencies:
+    debug: "npm:^4.1.1"
+    globrex: "npm:^0.1.2"
+    tsconfck: "npm:^3.0.3"
+  peerDependencies:
+    vite: "*"
+  peerDependenciesMeta:
+    vite:
+      optional: true
+  checksum: 10/c12e2087fd01ac8a694850c649b79d5b9798cdba0ef9ab4116f669d8ffa1a9a3195c5a14410d3d9a12d2f08cd35ddd74f03d9c7b13a2d590d002055cdaab45c0
+  languageName: node
+  linkType: hard
 
 "vite@npm:^5.2.0":
   version: 5.4.2
