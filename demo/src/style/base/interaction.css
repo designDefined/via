@@ -1,0 +1,7 @@
+*:focus {
+  outline: none;
+}
+
+.event-select:hover {
+  background-color: red;
+}
