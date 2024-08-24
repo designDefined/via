@@ -3,11 +3,13 @@
   "packageManager": "yarn@4.3.1",
   "workspaces": [
     "package/**/*",
+    "temp/**/*",
     "demo"
   ],
   "scripts": {
     "demo": "yarn workspace demo",
-    "core": "yarn workspace viajs-core"
+    "core": "yarn workspace viajs-core",
+    "react": "yarn workspace viajs-react"
   },
   "devDependencies": {
     "esbuild": "^0.23.1",
