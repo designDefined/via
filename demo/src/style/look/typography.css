@@ -12,10 +12,11 @@ h1 {
 }
 h2 {
   font-size: 64px;
+  font-weight: 100;
 }
 h3 {
   font-size: 48px;
-  font-weight: 300;
+  font-weight: 100;
 }
 h4 {
   font-size: 40px;
@@ -31,6 +32,7 @@ h6 {
 }
 p {
   font-size: 24px;
+  line-height: 150%;
 }
 strong {
   font-weight: 700;
@@ -56,6 +58,13 @@ li {
   display: list-item !important;
   margin: 16px 0;
   font-size: 28px;
+  line-height: 150%;
+}
+ul.pros {
+  list-style-type: "+   " !important;
+}
+ul.cons {
+  color: rgb(199, 30, 30);
 }
 img {
   align-self: center;
@@ -65,9 +74,32 @@ img {
   overflow: hidden;
 }
 
+pre {
+  font-size: 22px !important;
+  line-height: 120% !important;
+}
+
 .bordered {
-  width: 640px;
   align-self: center;
+  border: 1px solid black;
+  border-radius: 16px;
+}
+
+.todo {
+  font-size: 22px !important;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+  transition: 0.1s;
+}
+a:hover {
+  opacity: 0.6;
+}
+
+.padded {
+  padding: 40px;
   border: 1px solid black;
   border-radius: 16px;
 }

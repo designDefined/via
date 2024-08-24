@@ -1,5 +1,6 @@
 {
   "name": "viajs",
+  "private": true,
   "packageManager": "yarn@4.3.1",
   "workspaces": [
     "package/**/*",
@@ -9,7 +10,8 @@
   "scripts": {
     "demo": "yarn workspace demo",
     "core": "yarn workspace viajs-core",
-    "react": "yarn workspace viajs-react"
+    "react": "yarn workspace viajs-react",
+    "build": "yarn core build && yarn react build && yarn demo build"
   },
   "devDependencies": {
     "esbuild": "^0.23.1",
