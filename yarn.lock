@@ -1804,7 +1804,7 @@ __metadata:
     react-highlight: "npm:^0.15.0"
     typescript: "npm:^5.2.2"
     viajs-core: "npm:^0.1.5"
-    viajs-react: "npm:^0.1.4"
+    viajs-react: "npm:^0.1.5"
     vite: "npm:^5.2.0"
     vite-bundle-visualizer: "npm:^1.2.1"
     zod: "npm:^3.23.8"
@@ -4079,7 +4079,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"viajs-react@npm:^0.1.4, viajs-react@workspace:package/react":
+"viajs-react@npm:^0.1.5, viajs-react@workspace:package/react":
   version: 0.0.0-use.local
   resolution: "viajs-react@workspace:package/react"
   dependencies:
