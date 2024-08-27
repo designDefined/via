@@ -26,7 +26,7 @@ export type StateTree<P extends ParserTree<unknown>> =
         ? { [K in keyof P]: StateTree<P[K]> }
         : never;
 
-export type Value<P> = P extends Parser<infer U> ? { value: U; error: unknown } : never;
+export type Value<P> = P extends Parser<infer U> ? { value: U; error: unknown; modified: boolean } : never;
 export type ValueTree<P extends ParserTree<unknown>> =
   P extends Parser<unknown>
     ? Value<P>
@@ -44,13 +44,22 @@ export const isState = <P extends Parser<unknown>>(state: unknown): state is Sta
 export const isStateArray = <P extends [ParserTree<unknown>]>(state: unknown): state is StateArray<P> =>
   typeof state === "object" && state !== null && "type" in state && state.type === "ARRAY";
 
+export const errorFromParser = <P extends Parser<unknown>>(parser: P) => {
+  try {
+    parser(undefined);
+    return undefined;
+  } catch (e) {
+    return e;
+  }
+};
+
 export const stateFromParserTree = <P extends ParserTree<unknown>>(parserTree: P): StateTree<P> => {
   if (isParser(parserTree))
     return {
       type: "STATE" as const,
       parser: parserTree,
       value: undefined,
-      error: undefined,
+      error: errorFromParser(parserTree),
       modified: false,
     } as State<typeof parserTree> as StateTree<P>;
 
@@ -82,7 +91,7 @@ export const isStateValid = <P extends ParserTree<unknown>>(state: StateTree<P>)
 };
 
 export const valueFromState = <P extends ParserTree<unknown>>(state: StateTree<P>): ValueTree<P> => {
-  if (isState(state)) return { value: state.value, error: state.error } as any;
+  if (isState(state)) return { value: state.value, error: state.error, modified: state.modified } as any;
   if (isStateArray(state)) return state.value.map(valueFromState as any) as any;
   return Object.keys(state).reduce((acc, key) => {
     acc[key] = valueFromState(state[key as keyof typeof state] as unknown as any);

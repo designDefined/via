@@ -31,7 +31,7 @@ export const useIntentSubmit = <P extends ParserTree<unknown>, O>({
   }, [key, errors, isEmpty]);
 
   const submit = useCallback(() => {
-    if (!isValid) return Promise.reject(errors[0]); // TODO: Merge error
+    if (!isValid) return Promise.reject(errors[0] ?? new Error("input is empty")); // TODO: Merge error
     return send(...([currentInput] as ToArgs<Inferred<P>>)).then(output => {
       needReset.current = true; // Do not reset immmediately.
       return output;

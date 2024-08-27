@@ -82,7 +82,6 @@ export const useIntent = <P extends ParserTree<unknown>, O>({
         }
       } catch (e) {
         // reject wrong input
-        console.error("Send Input is invalid:"); // TODO: Change temporal debug message
         console.error(e);
         set({ lastInput: args?.[0] as Inferred<P>, lastOutput: undefined, isWorking: false }, { error: e });
         reject({ i: args?.[0] as Inferred<P>, error: e });
