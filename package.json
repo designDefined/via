@@ -14,7 +14,6 @@
     "build": "yarn core build && yarn react build && yarn demo build"
   },
   "devDependencies": {
-    "esbuild": "^0.23.1",
     "eslint": "^8.57.0",
     "prettier": "^3.2.5"
   }
