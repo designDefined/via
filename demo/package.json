@@ -13,8 +13,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-highlight": "^0.15.0",
-    "viajs-core": "^0.1.4",
-    "viajs-react": "^0.1.4",
+    "viajs-core": "^0.1.5",
+    "viajs-react": "^0.1.5",
     "zod": "^3.23.8"
   },
   "devDependencies": {
