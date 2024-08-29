@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useMemo } from "react";
 import { Intent, IntentParams, ParserTree, StoredIntent, Inferred, isPromise, To, StoredInfo } from "viajs-core";
 import { useStore } from "../store";
 
@@ -20,13 +20,13 @@ export const useIntent = <P extends ParserTree<unknown>, O>({
   model: overrideModel,
   ...overrideInfo
 }: UseIntentParams<P, O>): UseIntent<P, O> => {
-  const storeInfoRef = useRef({ ...intentInfo, ...overrideInfo });
-  const toRef = useRef(overrideTo ?? to);
+  const storeInfoMemo = useMemo(() => ({ ...intentInfo, ...overrideInfo }), [key]);
+  const toMemo = useMemo(() => overrideTo ?? to, [key]);
   const nextMemo = useMemo(() => overrideNext ?? next, [key]);
   const catchMemo = useMemo(() => overrideCatch ?? _catch, [key]);
-  const modelRef = useRef({ ...model, ...overrideModel });
+  const modelMemo = useMemo(() => ({ ...model, ...overrideModel }), [key]);
   const [[intent, info], set, store] = useStore<StoredIntent<Inferred<P>, O>>({
-    ...storeInfoRef.current,
+    ...storeInfoMemo,
     key,
     value: { isWorking: false },
   });
@@ -50,11 +50,10 @@ export const useIntent = <P extends ParserTree<unknown>, O>({
   const send = useCallback(
     (...args: Parameters<To<Inferred<P>, O>>) => {
       try {
-        if (!toRef.current) throw new Error("no to provided");
+        if (!toMemo) throw new Error("no to provided");
         if (intent.value?.isWorking) return Promise.reject(new Error("already working")); // TODO: Add config to allow simultaneous requests
-        const input =
-          args && modelRef.current.i ? ([modelRef.current.i(args[0])] as Parameters<To<Inferred<P>, O>>) : args;
-        const toResult = toRef.current(...input);
+        const input = args && modelMemo.i ? ([modelMemo.i(args[0])] as Parameters<To<Inferred<P>, O>>) : args;
+        const toResult = toMemo(...input);
 
         if (isPromise(toResult)) {
           // set info working
@@ -62,7 +61,7 @@ export const useIntent = <P extends ParserTree<unknown>, O>({
           return toResult
             .then(async output => {
               // resolve asyncronous request
-              const validOutput = modelRef.current.o ? modelRef.current.o(output) : output;
+              const validOutput = modelMemo.o ? modelMemo.o(output) : output;
               await resolve({ i: input?.[0] as Inferred<P>, o: validOutput });
               set({ isWorking: false, lastInput: input?.[0] as Inferred<P>, lastOutput: validOutput });
               return validOutput;
