@@ -4075,6 +4075,7 @@ __metadata:
     nanoid: "npm:^5.0.7"
     typescript: "npm:^5.5.4"
     vite: "npm:^5.2.0"
+    vite-bundle-visualizer: "npm:^1.2.1"
     vite-plugin-dts: "npm:^4.0.3"
   languageName: unknown
   linkType: soft
@@ -4097,11 +4098,12 @@ __metadata:
     nanoid: "npm:^5.0.7"
     typescript: "npm:^5.5.4"
     vite: "npm:^5.2.0"
+    vite-bundle-visualizer: "npm:^1.2.1"
     vite-plugin-dts: "npm:^4.0.3"
   peerDependencies:
     react: ">=18.0.0"
     react-dom: ">=18.0.0"
-    viajs-core: ">=0.1.5"
+    viajs-core: ">=0.1.6"
   languageName: unknown
   linkType: soft
 
