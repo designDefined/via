@@ -44,6 +44,7 @@ export const isParserArray = <T>(parser: unknown): parser is [ParserTree<T>] => 
 
 export const Parser = <T>(arg: unknown) => arg as T;
 export const ParserOptional = <T>(arg: unknown) => arg as T | undefined;
+export const ParserOf = <T>(parser: Parser<T>) => parser;
 export const initiateParser = <P extends ParserTree<unknown>>(parserTree: P): InferredInitial<P> =>
   isParser(parserTree)
     ? undefined
