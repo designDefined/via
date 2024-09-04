@@ -67,32 +67,35 @@ export const getParserStateTree = <P extends ParserTree<unknown>>(parserTree: P)
 
 export const reduceState = <P extends ParserTree<unknown>>(
   state: StateTree<P>,
-): { value: ValueTree<P>; isModified: boolean; isValid: boolean } => {
+): { value: ValueTree<P>; isModified: boolean; isValid: boolean; errors: unknown[] } => {
   if (isState(state))
     return {
       value: { value: state.value, error: state.error, modified: state.modified } as ValueTree<P>,
       isModified: state.modified,
       isValid: !state.error,
+      errors: state.error ? [state.error] : [],
     };
   if (isStateArray(state))
     return state.value.reduce(
       (acc, item) => {
-        const { value, isModified, isValid } = reduceState(item as StateTree<any>);
+        const { value, isModified, isValid, errors } = reduceState(item as StateTree<any>);
         acc.value.push(value);
         if (isModified) acc.isModified = true;
         if (!isValid) acc.isValid = false;
+        acc.errors.push(...errors);
         return acc;
       },
-      { value: [], isModified: false, isValid: true } as any,
+      { value: [], isModified: false, isValid: true, errors: [] } as any,
     );
   return Object.keys(state).reduce(
     (acc, key) => {
-      const { value, isModified, isValid } = reduceState(state[key as keyof typeof state] as StateTree<any>);
+      const { value, isModified, isValid, errors } = reduceState(state[key as keyof typeof state] as StateTree<any>);
       acc.value[key] = value;
       if (isModified) acc.isModified = true;
       if (!isValid) acc.isValid = false;
+      acc.errors.push(...errors);
       return acc;
     },
-    { value: {} as any, isModified: false, isValid: true } as any,
+    { value: {} as any, isModified: false, isValid: true, errors: [] } as any,
   );
 };
