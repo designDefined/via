@@ -605,26 +605,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluid/core@workspace:temp/fluid/core":
-  version: 0.0.0-use.local
-  resolution: "@fluid/core@workspace:temp/fluid/core"
-  dependencies:
-    "@types/react": "npm:^18.2.66"
-    "@types/react-dom": "npm:^18.2.22"
-    "@typescript-eslint/eslint-plugin": "npm:^7.2.0"
-    "@typescript-eslint/parser": "npm:^7.2.0"
-    "@vitejs/plugin-react": "npm:^4.2.1"
-    eslint: "npm:^8.57.0"
-    eslint-plugin-react-hooks: "npm:^4.6.0"
-    eslint-plugin-react-refresh: "npm:^0.4.6"
-    typescript: "npm:^5.2.2"
-    vite: "npm:^5.2.0"
-    vite-tsconfig-paths: "npm:^4.3.2"
+"@flexive/core@npm:^0.4.8":
+  version: 0.4.8
+  resolution: "@flexive/core@npm:0.4.8"
   peerDependencies:
     react: ^18.2.0
     react-dom: ^18.2.0
-  languageName: unknown
-  linkType: soft
+  checksum: 10/6d70aa7430244eec11e5789fa29ff9f1733a3c57fe70b7b9c32787157fc7ee89945602ca3ce46121d5181a5758982587379b627844df48490cab2629262986cf
+  languageName: node
+  linkType: hard
 
 "@humanwhocodes/config-array@npm:^0.11.14":
   version: 0.11.14
@@ -813,6 +802,13 @@ __metadata:
   version: 0.11.0
   resolution: "@pkgjs/parseargs@npm:0.11.0"
   checksum: 10/115e8ceeec6bc69dff2048b35c0ab4f8bbee12d8bb6c1f4af758604586d802b6e669dcb02dda61d078de42c2b4ddce41b3d9e726d7daa6b4b850f4adbf7333ff
+  languageName: node
+  linkType: hard
+
+"@remix-run/router@npm:1.19.1":
+  version: 1.19.1
+  resolution: "@remix-run/router@npm:1.19.1"
+  checksum: 10/2800c2f6567a982fe942aacc4cb5b170e7cc89bd455960e3bea2424161ff7dac32d01886322d88dd19b88d1bea711f39566d17f02b73eeb74999affb471f8f52
   languageName: node
   linkType: hard
 
@@ -1753,7 +1749,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:4, debug@npm:^4.1.0, debug@npm:^4.1.1, debug@npm:^4.3.1, debug@npm:^4.3.2, debug@npm:^4.3.4, debug@npm:^4.3.6":
+"debug@npm:4, debug@npm:^4.1.0, debug@npm:^4.3.1, debug@npm:^4.3.2, debug@npm:^4.3.4, debug@npm:^4.3.6":
   version: 4.3.6
   resolution: "debug@npm:4.3.6"
   dependencies:
@@ -1790,6 +1786,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "demo@workspace:demo"
   dependencies:
+    "@flexive/core": "npm:^0.4.8"
     "@types/react": "npm:^18.2.66"
     "@types/react-dom": "npm:^18.2.22"
     "@types/react-highlight": "npm:^0.12.8"
@@ -1802,6 +1799,7 @@ __metadata:
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
     react-highlight: "npm:^0.15.0"
+    react-router-dom: "npm:^6.26.1"
     typescript: "npm:^5.2.2"
     viajs-core: "workspace:^"
     viajs-react: "workspace:^"
@@ -2480,13 +2478,6 @@ __metadata:
     merge2: "npm:^1.4.1"
     slash: "npm:^3.0.0"
   checksum: 10/288e95e310227bbe037076ea81b7c2598ccbc3122d87abc6dab39e1eec309aa14f0e366a98cdc45237ffcfcbad3db597778c0068217dcb1950fef6249104e1b1
-  languageName: node
-  linkType: hard
-
-"globrex@npm:^0.1.2":
-  version: 0.1.2
-  resolution: "globrex@npm:0.1.2"
-  checksum: 10/81ce62ee6f800d823d6b7da7687f841676d60ee8f51f934ddd862e4057316d26665c4edc0358d4340a923ac00a514f8b67c787e28fe693aae16350f4e60d55e9
   languageName: node
   linkType: hard
 
@@ -3460,6 +3451,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-router-dom@npm:^6.26.1":
+  version: 6.26.1
+  resolution: "react-router-dom@npm:6.26.1"
+  dependencies:
+    "@remix-run/router": "npm:1.19.1"
+    react-router: "npm:6.26.1"
+  peerDependencies:
+    react: ">=16.8"
+    react-dom: ">=16.8"
+  checksum: 10/1bd255d1ff88f477699c72656e7c07702a907e644388a1bea1c648f2df0c3c86db2e90bea945b1d43eaf84ebab194f3868f3788502965ad5f20c508c6874f1fe
+  languageName: node
+  linkType: hard
+
+"react-router@npm:6.26.1":
+  version: 6.26.1
+  resolution: "react-router@npm:6.26.1"
+  dependencies:
+    "@remix-run/router": "npm:1.19.1"
+  peerDependencies:
+    react: ">=16.8"
+  checksum: 10/b3761515c75da65a1678f005d08a6285ceccd9df7237ae6fdd9ab2ab816ef328435b75610f705ecd9ecd41c6878fd22eb9b44c5391cdef2e1ed99ddbc78de8a4
+  languageName: node
+  linkType: hard
+
 "react@npm:^18.2.0":
   version: 18.3.1
   resolution: "react@npm:18.3.1"
@@ -3920,20 +3935,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsconfck@npm:^3.0.3":
-  version: 3.1.1
-  resolution: "tsconfck@npm:3.1.1"
-  peerDependencies:
-    typescript: ^5.0.0
-  peerDependenciesMeta:
-    typescript:
-      optional: true
-  bin:
-    tsconfck: bin/tsconfck.js
-  checksum: 10/a4456577f540212516d7eb530005893739aadd6da00787914a8ed9aa19c3f2f306b8912920aa440b9b8978f10c9dadbd062b8c2a2f0ff1f6c2d4272b5be2ef34
-  languageName: node
-  linkType: hard
-
 "tslib@npm:^2.4.1":
   version: 2.7.0
   resolution: "tslib@npm:2.7.0"
@@ -4093,8 +4094,6 @@ __metadata:
     eslint: "npm:^8.57.0"
     eslint-plugin-react-hooks: "npm:^4.6.0"
     eslint-plugin-react-refresh: "npm:^0.4.6"
-    immer: "npm:^10.1.1"
-    lodash: "npm:^4.17.21"
     nanoid: "npm:^5.0.7"
     typescript: "npm:^5.5.4"
     vite: "npm:^5.2.0"
@@ -4151,22 +4150,6 @@ __metadata:
     vite:
       optional: true
   checksum: 10/996603ffe81d5264da862ebcc85e05e09e1251fc456841e3f7233c4ae243c699d29889f3206be72b01873527d85beeaa4fcbacc61e31a71a5cab02fdb1d03e0d
-  languageName: node
-  linkType: hard
-
-"vite-tsconfig-paths@npm:^4.3.2":
-  version: 4.3.2
-  resolution: "vite-tsconfig-paths@npm:4.3.2"
-  dependencies:
-    debug: "npm:^4.1.1"
-    globrex: "npm:^0.1.2"
-    tsconfck: "npm:^3.0.3"
-  peerDependencies:
-    vite: "*"
-  peerDependenciesMeta:
-    vite:
-      optional: true
-  checksum: 10/c12e2087fd01ac8a694850c649b79d5b9798cdba0ef9ab4116f669d8ffa1a9a3195c5a14410d3d9a12d2f08cd35ddd74f03d9c7b13a2d590d002055cdaab45c0
   languageName: node
   linkType: hard
 

@@ -11,7 +11,8 @@
     "demo": "yarn workspace demo",
     "core": "yarn workspace viajs-core",
     "react": "yarn workspace viajs-react",
-    "build": "yarn core build && yarn react build && yarn demo build"
+    "build": "yarn core build && yarn react build && yarn demo build",
+    "build:library": "yarn core build && yarn react build"
   },
   "devDependencies": {
     "eslint": "^8.57.0",
