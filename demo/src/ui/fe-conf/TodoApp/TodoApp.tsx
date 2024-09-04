@@ -1,8 +1,8 @@
+import { Li, Div } from "@flexive/core";
 import { useIntent, useIntentSubmit, useView } from "viajs-react";
-import { TodosView } from "../../core/view";
-import { Todo } from "../../core/entity";
-import { AddTodoIntent, ToggleTodoIntent } from "../../core/intent";
-import { Div, Li } from "@fluid/core";
+import { Todo } from "../../../core/feconf/entity";
+import { AddTodoIntent, ToggleTodoIntent } from "../../../core/feconf/intent";
+import { TodosView } from "../../../core/feconf/view";
 
 export default function TodoApp() {
   const { value: todos } = useView({
@@ -52,7 +52,7 @@ function TodoItem({ todo }: { todo: Todo }) {
 
   return (
     <Li className="todo">
-      <Div fluid={{ flow: ["row", "nowrap", "center"] }}>
+      <Div f={{ flow: ["row", "nowrap", "center"] }}>
         <div>{todo.content}</div>
         <input
           type="checkbox"

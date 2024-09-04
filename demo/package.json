@@ -10,9 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@flexive/core": "^0.4.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-highlight": "^0.15.0",
+    "react-router-dom": "^6.26.1",
     "viajs-core": "workspace:^",
     "viajs-react": "workspace:^",
     "zod": "^3.23.8"

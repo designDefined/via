@@ -1,7 +1,6 @@
-import { Intent } from "viajs-core";
+import { Intent, ParserOf } from "viajs-core";
 import { TodoRepository } from "./repository";
 import { TodosView } from "./view";
-import { ParserOf } from "../../../package/core";
 
 export const ToggleTodoIntent = Intent<[number], () => boolean, boolean>(todoId => ({
   key: ["intent", "toggleTodo", { todoId }],
