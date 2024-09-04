@@ -12,7 +12,7 @@ export const useViewOptional = <T>({ view: { key, ...viewStatus }, ...overrideSt
     if (!updater) throw new Error("no updater provided"); // TODO: Handle error
     if (!view.value) throw new Error("no value found"); // TODO: Handle error
     set(updater(view.value));
-  }, [set, overrideStatus.updater, viewStatus.updater, view.value]);
+  }, [key, set, overrideStatus.updater, viewStatus.updater, view.value]);
 
   return {
     value: view.value,

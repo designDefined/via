@@ -1,7 +1,7 @@
 import { Setter, SetterConfig, Store, StoredInfo, StoredValues } from "viajs-core";
 import { nanoid } from "nanoid";
-import { useCallback, useContext, useEffect, useReducer, useRef } from "react";
-import { ViaContext } from "./storeContext";
+import { useCallback, useEffect, useReducer, useRef } from "react";
+import { useStoreContext } from "./useStoreContext";
 
 export type UseStoreParams<T> = StoredInfo<T> & { value?: T };
 
@@ -9,11 +9,8 @@ type Get<T, Slice> = [StoredValues<Slice>, StoredInfo<T>];
 type Set<T> = (setter: Setter<T> | Promise<Setter<T>>, config?: SetterConfig) => void;
 
 export const useStore = <T>({ key, ...params }: UseStoreParams<T>): [Get<T, T>, Set<T>, Store] => {
-  const store = useContext(ViaContext);
-  if (!store) throw new Error("useStore must be used within proper context");
-
-  // subscriptionKey and configs remains same throughout the lifecycle of the component
-  const subscriptionKey = useRef(nanoid());
+  const store = useStoreContext();
+  const subscriptionKey = useRef(nanoid()); // subscriptionKey remains same throughout the lifecycle of the component.
 
   const [[values, info], dispatch] = useReducer<(prev: Get<T, T>, next: Get<T, T>) => Get<T, T>, null>(
     (prev, next) => {
@@ -28,10 +25,10 @@ export const useStore = <T>({ key, ...params }: UseStoreParams<T>): [Get<T, T>, 
     },
   );
 
-  // if key changes, re-initiate the store
+  // If key changes, re-initiate the store.
+  // Detect key change when key argument differ from stored key.
   if (key !== info.key) {
     const { values, info } = store.get<T>({ ...params, key });
-
     dispatch([values, info]);
   }
 

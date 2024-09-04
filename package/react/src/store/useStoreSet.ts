@@ -9,7 +9,6 @@ type StoreSetParams<T> = {
 
 export const useStoreSet = () => {
   const store = useStoreContext();
-
   const set = useCallback(
     <T>({ key, setter }: StoreSetParams<T>) => {
       const value = store.read<T>({ key });
