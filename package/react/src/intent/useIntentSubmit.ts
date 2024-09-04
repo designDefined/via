@@ -22,7 +22,7 @@ export const useIntentSubmit = <P extends ParserTree<unknown>, O>({
 }: UseIntentSubmitParams<P, O>): UseIntentSubmit<P, O> => {
   const needReset = useRef(false);
   const { send, info, isWorking } = useIntent<P, O>({ intent: { ...intent, key }, ...params });
-  const { state, value, current, isValid, isModified, set, reset } = useIntentInput<P, O>({
+  const { state, value, current, isValid, isModified, errors, set, reset } = useIntentInput<P, O>({
     intent: { ...intent, key },
     initialSetter,
     cacheTime: params.cacheTime ?? intent.cacheTime,
@@ -44,5 +44,5 @@ export const useIntentSubmit = <P extends ParserTree<unknown>, O>({
     if (!isWorking && needReset.current === true) reset();
   }, [isWorking]);
 
-  return { set, send, reset, submit, info, value, current, state, isWorking, isValid, isModified };
+  return { set, send, reset, submit, info, value, current, state, isWorking, isValid, isModified, errors };
 };

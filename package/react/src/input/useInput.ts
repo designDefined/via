@@ -29,6 +29,7 @@ export type UseInput<P extends ParserTree<unknown>> = {
   current: InferredStructure<P>;
   isModified: boolean;
   isValid: boolean;
+  errors: unknown[];
 };
 
 export const useInput = <P extends ParserTree<unknown>>({
@@ -61,7 +62,7 @@ export const useInput = <P extends ParserTree<unknown>>({
     if (initialSetter) set(initialSetter, { silent: true });
   }, [parser, setStored, set, initialSetter]);
 
-  const { value, isValid, isModified } = useMemo(() => {
+  const { value, isValid, isModified, errors } = useMemo(() => {
     return reduceState(input.state);
   }, [key, input.state]);
 
@@ -69,5 +70,5 @@ export const useInput = <P extends ParserTree<unknown>>({
     if (initialSetter) set(initialSetter, { silent: true });
   }, [key]);
 
-  return { state: input.state, current: input.current, value, isValid, isModified, set, reset };
+  return { state: input.state, current: input.current, value, isValid, isModified, errors, set, reset };
 };

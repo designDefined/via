@@ -10,10 +10,13 @@ export default function Home() {
     set,
     submit,
     isWorking,
+    errors,
   } = useIntentSubmit({
     intent: TestIntent(),
     resetImmediately: true,
   });
+
+  console.log(errors);
 
   return (
     <Main f={{ spacing: [16, 16] }}>
