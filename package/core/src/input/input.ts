@@ -1,22 +1,24 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { produce } from "immer";
-import { InferredPartial, InferredInitial, Parser, ParserTree } from "./parser";
-import { isState, isStateArray, State, stateFromParserTree, StateTree } from "./state";
+import { InferredPartial, InferredStructure, Parser, ParserTree, parseSafe } from "./parser";
+import { isState, isStateArray, State, getParserStateTree, StateTree } from "./state";
 
 // core-types
 export type StoredInput<P extends ParserTree<unknown>> = {
   parser: P;
   state: StateTree<P>;
-  current: InferredInitial<P>;
+  current: InferredStructure<P>;
 };
 
-export type InputSetterFunction<P extends ParserTree<unknown>> = (arg: InferredInitial<P>) => InferredInitial<P> | void;
+export type InputSetterFunction<P extends ParserTree<unknown>> = (
+  arg: InferredStructure<P>,
+) => InferredStructure<P> | void;
 export type InputSetter<P extends ParserTree<unknown>> = InferredPartial<P> | InputSetterFunction<P>;
 
 // configs
 export type UpdateConfig = { silent?: boolean };
 
-// appi
+// api
 
 export const isInputSetterFunction = <P extends ParserTree<unknown>>(
   setter: InputSetter<P>,
@@ -24,15 +26,15 @@ export const isInputSetterFunction = <P extends ParserTree<unknown>>(
 
 export const mergePartial = <P extends ParserTree<unknown>>(
   state: StateTree<P>,
-  prev: InferredInitial<P>,
+  prev: InferredStructure<P>,
   partial: InferredPartial<P>,
-): InferredInitial<P> => {
-  if (isState(state)) return partial as InferredInitial<P>;
+): InferredStructure<P> => {
+  if (isState(state)) return partial as InferredStructure<P>;
   if (isStateArray(state)) {
-    if (partial === undefined) return [] as InferredInitial<P>;
+    if (partial === undefined) return [] as InferredStructure<P>;
     const length = Math.max(state.value.length, (partial as any[]).length);
     return Array.from({ length }, (_, i) => {
-      const itemState = stateFromParserTree(state.parser);
+      const itemState = getParserStateTree(state.parser);
       const itemPrev = (prev as any[])[i];
       const itemPartial = (partial as any[])[i];
       if (itemPrev !== undefined && itemPartial === undefined) return itemPrev;
@@ -40,7 +42,7 @@ export const mergePartial = <P extends ParserTree<unknown>>(
         return mergePartial(itemState as any, state.initial, itemPartial);
       if (itemPrev === undefined && itemPartial === undefined) return itemPrev;
       return mergePartial(itemState as any, itemPrev, itemPartial);
-    }) as InferredInitial<P>;
+    }) as InferredStructure<P>;
   }
 
   return Object.keys(state).reduce((acc, key) => {
@@ -56,41 +58,35 @@ export const mergePartial = <P extends ParserTree<unknown>>(
 };
 
 export const mergeFunction = <P extends ParserTree<unknown>>(
-  prev: InferredInitial<P>,
+  prev: InferredStructure<P>,
   setter: InputSetterFunction<P>,
-): InferredInitial<P> => produce(prev, setter);
+): InferredStructure<P> => produce(prev, setter);
 
 export const updateState = <P extends Parser<unknown>>(
   state: State<P>,
-  value: InferredInitial<P>,
+  current: InferredStructure<P>,
   silent?: boolean,
 ): State<P> => {
-  try {
-    if (value === undefined) return { ...state, value: undefined, error: undefined, modified: !silent };
-    const parsed = state.parser(value) as InferredInitial<P>;
-    return { ...state, value: parsed, error: undefined, modified: !silent };
-  } catch (e) {
-    return { ...state, value, error: e, modified: !silent };
-  }
+  const { value, parsed, error } = parseSafe(state.parser, current);
+  return { ...state, value: (parsed ?? value) as InferredStructure<P>, error, modified: state.modified || !silent };
 };
 
 export const updateStateTree = <P extends ParserTree<unknown>>(
   prevState: StateTree<P>,
-  value: InferredInitial<P>,
+  current: InferredStructure<P>,
   config?: UpdateConfig,
 ): StateTree<P> => {
-  if (isState(prevState)) return updateState(prevState, value, config?.silent) as StateTree<P>;
+  if (isState(prevState)) return updateState(prevState, current, config?.silent) as StateTree<P>;
   if (isStateArray(prevState)) {
-    const commonState = stateFromParserTree(prevState.parser);
+    const commonState = getParserStateTree(prevState.parser);
     return {
       ...prevState,
-      value: (value as any[]).map(itemValue => updateStateTree(commonState as any, itemValue, config)),
+      value: (current as any[]).map(itemValue => updateStateTree(commonState as any, itemValue, config)),
     };
   }
   return Object.keys(prevState).reduce((acc, key) => {
     const itemState = prevState[key as keyof typeof prevState] as any;
-    const itemValue = value[key as keyof typeof value];
-    if (itemValue === undefined) return { ...acc, [key]: itemState };
+    const itemValue = current[key as keyof typeof current];
     return { ...acc, [key]: updateStateTree(itemState, itemValue, config) };
   }, {} as any);
 };
@@ -99,10 +95,10 @@ export const update = <P extends ParserTree<unknown>>(
   prev: StoredInput<P>,
   setter: InputSetter<P>,
   config?: UpdateConfig,
-) => {
+): StoredInput<P> => {
   const newCurrent = isInputSetterFunction(setter)
     ? mergeFunction(prev.current, setter)
     : mergePartial(prev.state, prev.current, setter);
   const newState = updateStateTree(prev.state, newCurrent, config);
-  return { ...prev, state: newState, current: newCurrent as InferredInitial<P> };
+  return { ...prev, state: newState, current: newCurrent };
 };

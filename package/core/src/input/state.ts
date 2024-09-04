@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { InferredInitial, Parser, ParserTree, initiateParser, isParser, isParserArray } from "./parser";
+import { InferredStructure, Parser, ParserTree, isParser, isParserArray, parseSafe } from "./parser";
 
 // core types
+
+// state
 export type State<P extends Parser<unknown>> = {
   type: "STATE";
   parser: P;
-  value: InferredInitial<P> | undefined;
+  value: InferredStructure<P> | undefined;
   error: unknown;
   modified: boolean;
 };
@@ -13,7 +15,7 @@ export type State<P extends Parser<unknown>> = {
 export type StateArray<P extends [ParserTree<unknown>]> = {
   type: "ARRAY";
   parser: P[0];
-  initial: InferredInitial<P[0]>;
+  initial: InferredStructure<P[0]>;
   value: StateTree<P[0]>[];
 };
 
@@ -26,6 +28,7 @@ export type StateTree<P extends ParserTree<unknown>> =
         ? { [K in keyof P]: StateTree<P[K]> }
         : never;
 
+// value
 export type Value<P> = P extends Parser<infer U> ? { value: U; error: unknown; modified: boolean } : never;
 export type ValueTree<P extends ParserTree<unknown>> =
   P extends Parser<unknown>
@@ -40,61 +43,56 @@ export type ValueTree<P extends ParserTree<unknown>> =
 export const isState = <P extends Parser<unknown>>(state: unknown): state is State<P> => {
   return typeof state === "object" && state !== null && "type" in state && state.type === "STATE";
 };
-
 export const isStateArray = <P extends [ParserTree<unknown>]>(state: unknown): state is StateArray<P> =>
   typeof state === "object" && state !== null && "type" in state && state.type === "ARRAY";
 
-export const errorFromParser = <P extends Parser<unknown>>(parser: P) => {
-  try {
-    parser(undefined);
-    return undefined;
-  } catch (e) {
-    return e;
+export const getParserStateTree = <P extends ParserTree<unknown>>(parserTree: P): StateTree<P> => {
+  if (isParser(parserTree)) {
+    const { value, error } = parseSafe<typeof parserTree, undefined>(parserTree, undefined);
+    return { type: "STATE" as const, parser: parserTree, value, error, modified: false } as StateTree<P>;
   }
-};
-
-export const stateFromParserTree = <P extends ParserTree<unknown>>(parserTree: P): StateTree<P> => {
-  if (isParser(parserTree))
-    return {
-      type: "STATE" as const,
-      parser: parserTree,
-      value: undefined,
-      error: errorFromParser(parserTree),
-      modified: false,
-    } as State<typeof parserTree> as StateTree<P>;
-
   if (isParserArray(parserTree))
     return {
       type: "ARRAY" as const,
       parser: parserTree[0],
-      initial: initiateParser(parserTree[0]),
+      initial: parserTree[0],
       value: [] as any[],
-    } as StateArray<typeof parserTree> as StateTree<P>;
+    } as StateTree<P>;
 
   return Object.keys(parserTree).reduce((acc, key) => {
-    acc[key] = stateFromParserTree(parserTree[key as keyof P] as ParserTree<unknown>);
+    acc[key] = getParserStateTree(parserTree[key as keyof P] as ParserTree<unknown>);
     return acc;
   }, {} as any) as StateTree<P>;
 };
 
-// extract
-export const isStateModified = <P extends ParserTree<unknown>>(state: StateTree<P>): boolean => {
-  if (isState(state)) return state.modified;
-  if (isStateArray(state)) return state.value.some(isStateModified as any);
-  return Object.values(state).some(isStateModified as any);
-};
-
-export const isStateValid = <P extends ParserTree<unknown>>(state: StateTree<P>): boolean => {
-  if (isState(state)) return !state.error;
-  if (isStateArray(state)) return state.value.every(isStateValid as any);
-  return Object.values(state).every(isStateValid as any);
-};
-
-export const valueFromState = <P extends ParserTree<unknown>>(state: StateTree<P>): ValueTree<P> => {
-  if (isState(state)) return { value: state.value, error: state.error, modified: state.modified } as any;
-  if (isStateArray(state)) return state.value.map(valueFromState as any) as any;
-  return Object.keys(state).reduce((acc, key) => {
-    acc[key] = valueFromState(state[key as keyof typeof state] as unknown as any);
-    return acc;
-  }, {} as any) as ValueTree<P>;
+export const reduceState = <P extends ParserTree<unknown>>(
+  state: StateTree<P>,
+): { value: ValueTree<P>; isModified: boolean; isValid: boolean } => {
+  if (isState(state))
+    return {
+      value: { value: state.value, error: state.error, modified: state.modified } as ValueTree<P>,
+      isModified: state.modified,
+      isValid: !state.error,
+    };
+  if (isStateArray(state))
+    return state.value.reduce(
+      (acc, item) => {
+        const { value, isModified, isValid } = reduceState(item as StateTree<any>);
+        acc.value.push(value);
+        if (isModified) acc.isModified = true;
+        if (!isValid) acc.isValid = false;
+        return acc;
+      },
+      { value: [], isModified: false, isValid: true } as any,
+    );
+  return Object.keys(state).reduce(
+    (acc, key) => {
+      const { value, isModified, isValid } = reduceState(state[key as keyof typeof state] as StateTree<any>);
+      acc.value[key] = value;
+      if (isModified) acc.isModified = true;
+      if (!isValid) acc.isValid = false;
+      return acc;
+    },
+    { value: {} as any, isModified: false, isValid: true } as any,
+  );
 };
