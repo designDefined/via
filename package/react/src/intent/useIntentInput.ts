@@ -11,7 +11,6 @@ export const useIntentInput = <P extends ParserTree<unknown>, O>({
   intent: { key, parser, cacheTime },
   initialSetter,
   cacheTime: overrideCacheTime,
-  // config,
 }: UseIntentInputParams<P, O>): UseInput<P> => {
   if (!parser) throw new Error("no parser provided");
   const input = useInput<P>({ key: "input" + key, parser, initialSetter, cacheTime: overrideCacheTime ?? cacheTime });

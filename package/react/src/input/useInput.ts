@@ -1,17 +1,15 @@
 import {
-  initiateParser,
   InputSetter,
   ParserTree,
-  stateFromParserTree,
   StateTree,
   StoredInput,
   update,
-  valueFromState,
   ValueTree,
-  isStateModified,
-  isStateValid,
-  InferredInitial,
   UpdateConfig,
+  getParserStateTree,
+  getParserStructure,
+  InferredStructure,
+  reduceState,
 } from "viajs-core";
 import { useCallback, useEffect, useMemo } from "react";
 import { useStore } from "../store";
@@ -26,12 +24,10 @@ type UseInputParams<P extends ParserTree<unknown>> = {
 export type UseInput<P extends ParserTree<unknown>> = {
   set: (setter: InputSetter<P>, config?: UpdateConfig) => void;
   reset: () => void;
-  value: ValueTree<P>;
-  current: InferredInitial<P>;
-  currentInput: InferredInitial<P>;
   state: StateTree<P>;
-  errors: unknown[];
-  isEmpty: boolean;
+  value: ValueTree<P>;
+  current: InferredStructure<P>;
+  isModified: boolean;
   isValid: boolean;
 };
 
@@ -45,8 +41,8 @@ export const useInput = <P extends ParserTree<unknown>>({
     key,
     cacheTime,
     from: () => {
-      const state = stateFromParserTree(parser);
-      const current = initiateParser(parser);
+      const state = getParserStateTree(parser);
+      const current = getParserStructure(parser);
       return { parser, state, current };
     },
   });
@@ -59,29 +55,19 @@ export const useInput = <P extends ParserTree<unknown>>({
   );
 
   const reset = useCallback(() => {
-    const state = stateFromParserTree(parser);
-    const current = initiateParser(parser);
+    const state = getParserStateTree(parser);
+    const current = getParserStructure(parser);
     setStored({ parser, state, current }, { override: true });
     if (initialSetter) set(initialSetter, { silent: true });
   }, [parser, setStored, set, initialSetter]);
 
-  const value = useMemo(() => valueFromState(input.state), [input.state]);
-  const isEmpty = useMemo(() => !isStateModified(input.state), [input.state]);
-  const isValid = useMemo(() => isStateValid(input.state), [input.state]);
+  const { value, isValid, isModified } = useMemo(() => {
+    return reduceState(input.state);
+  }, [key, input.state]);
 
   useEffect(() => {
     if (initialSetter) set(initialSetter, { silent: true });
   }, [key]);
 
-  return {
-    state: input.state,
-    value,
-    current: input.current,
-    currentInput: input.current,
-    isEmpty,
-    isValid,
-    errors: [],
-    set,
-    reset,
-  };
+  return { state: input.state, current: input.current, value, isValid, isModified, set, reset };
 };
