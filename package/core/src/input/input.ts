@@ -19,7 +19,6 @@ export type InputSetter<P extends ParserTree<unknown>> = InferredPartial<P> | In
 export type UpdateConfig = { silent?: boolean };
 
 // api
-
 export const isInputSetterFunction = <P extends ParserTree<unknown>>(
   setter: InputSetter<P>,
 ): setter is InputSetterFunction<P> => typeof setter === "function";
