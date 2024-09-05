@@ -19,7 +19,6 @@ export type InputSetter<P extends ParserTree<unknown>> = InferredPartial<P> | In
 export type UpdateConfig = { silent?: boolean };
 
 // api
-
 export const isInputSetterFunction = <P extends ParserTree<unknown>>(
   setter: InputSetter<P>,
 ): setter is InputSetterFunction<P> => typeof setter === "function";
@@ -68,7 +67,12 @@ export const updateState = <P extends Parser<unknown>>(
   silent?: boolean,
 ): State<P> => {
   const { value, parsed, error } = parseSafe(state.parser, current);
-  return { ...state, value: (parsed ?? value) as InferredStructure<P>, error, modified: state.modified || !silent };
+  return {
+    ...state,
+    value: (parsed ?? value) as InferredStructure<P>,
+    error,
+    modified: state.modified || (!silent && value !== state.value),
+  };
 };
 
 export const updateStateTree = <P extends ParserTree<unknown>>(

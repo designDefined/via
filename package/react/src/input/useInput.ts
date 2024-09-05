@@ -11,7 +11,7 @@ import {
   InferredStructure,
   reduceState,
 } from "viajs-core";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useStore } from "../store";
 
 type UseInputParams<P extends ParserTree<unknown>> = {
@@ -38,6 +38,8 @@ export const useInput = <P extends ParserTree<unknown>>({
   initialSetter,
   cacheTime,
 }: UseInputParams<P>): UseInput<P> => {
+  const [resetCount, setResetCount] = useState(0);
+
   const [[{ value: input }], setStored] = useStore<StoredInput<P>>({
     key,
     cacheTime,
@@ -52,15 +54,12 @@ export const useInput = <P extends ParserTree<unknown>>({
 
   const set = useCallback(
     (setter: InputSetter<P>, config?: UpdateConfig) => setStored(update(input, setter, config), { override: true }),
-    [input, setStored],
+    [key, input, setStored],
   );
 
   const reset = useCallback(() => {
-    const state = getParserStateTree(parser);
-    const current = getParserStructure(parser);
-    setStored({ parser, state, current }, { override: true });
-    if (initialSetter) set(initialSetter, { silent: true });
-  }, [parser, setStored, set, initialSetter]);
+    setResetCount(c => c + 1);
+  }, []);
 
   const { value, isValid, isModified, errors } = useMemo(() => {
     return reduceState(input.state);
@@ -68,7 +67,18 @@ export const useInput = <P extends ParserTree<unknown>>({
 
   useEffect(() => {
     if (initialSetter) set(initialSetter, { silent: true });
+    setResetCount(0);
   }, [key]);
+
+  // reset
+  useEffect(() => {
+    if (resetCount < 1) return;
+    const state = getParserStateTree(parser);
+    const current = getParserStructure(parser);
+    if (initialSetter)
+      setStored(update({ parser, state, current }, initialSetter, { silent: true }), { override: true });
+    else setStored({ parser, state, current }, { override: true });
+  }, [resetCount]);
 
   return { state: input.state, current: input.current, value, isValid, isModified, errors, set, reset };
 };

@@ -1,22 +1,25 @@
 import { Button, Div, Input, Main } from "@flexive/core";
-import { useIntentSubmit } from "viajs-react";
-import { TestIntent } from "../../core/test";
+import { useIntentSubmit, useView } from "viajs-react";
+import { TestIntent, TestView } from "../../core/test";
 
 export default function Home() {
+  const { value: testView } = useView({ view: TestView() });
   const {
+    state,
     value: { required, optional1, optional2 },
     isValid,
     isModified,
     set,
     submit,
     isWorking,
-    errors,
+    reset,
   } = useIntentSubmit({
     intent: TestIntent(),
-    resetImmediately: true,
+    initialSetter: testView,
   });
 
-  console.log(errors);
+  console.log(state);
+  console.log({ required, optional1, optional2 });
 
   return (
     <Main f={{ spacing: [16, 16] }}>
@@ -53,18 +56,14 @@ export default function Home() {
       </Div>
       <Button onClick={() => set({})}>nothing</Button>
       <Button
-        onClick={() =>
-          set(draft => {
-            draft.required = undefined;
-            draft.optional1 = undefined;
-            draft.optional2 = undefined;
-          })
-        }
+        onClick={() => {
+          reset();
+        }}
       >
         reset all
       </Button>
       <Button
-        disabled={!isValid}
+        disabled={!isValid || !isModified}
         onClick={() => {
           submit().then(alert);
         }}

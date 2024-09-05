@@ -1,4 +1,4 @@
-import { Intent, Parser, ParserOptional } from "viajs-core";
+import { Inferred, Intent, Parser, ParserOptional, View } from "viajs-core";
 
 export const TestParser = {
   required: Parser<string>,
@@ -8,13 +8,11 @@ export const TestParser = {
 export const TestIntent = Intent<[], typeof TestParser>(() => ({
   key: ["intent", "test"],
   parser: TestParser,
-  to: input => {
-    const promise = new Promise<string>(resolve => {
-      const message = Object.values(input).join(", ");
-      setTimeout(() => {
-        resolve(message);
-      }, 5000);
-    });
-    return promise;
-  },
+  to: input => input.required,
+  next: ({ i }) => [TestView().set(i)],
+}));
+
+export const TestView = View<[], Inferred<typeof TestParser>>(() => ({
+  key: ["view", "test"],
+  from: () => ({ required: "초기값" }),
 }));
