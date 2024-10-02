@@ -33,6 +33,7 @@ export type SetterFn<T> = (draft: T) => void;
 export type Setter<T> = SetterWhole<T> | SetterPartial<T> | SetterFn<T>;
 export type SetterConfig = {
   override?: boolean;
+  initiate?: boolean;
   clearPromise?: boolean;
   error?: unknown;
 };
@@ -167,7 +168,7 @@ export const createStore = () => {
 
     // add stored if it doesn't exist and request is overridable
     if (!stored) {
-      if (!config?.override) return;
+      if (!config?.initiate) return;
       _create({ key, value: setter, ...config });
       return;
     }
@@ -178,7 +179,8 @@ export const createStore = () => {
     // replace existing value with setter if override
     if (config?.override) newValues = { ...stored.values, value: setter as T };
     // prevent partial merge if value is empty
-    else if (stored.values.value === undefined) newValues = stored.values; // TODO: Is this okay?
+    else if (stored.values.value === undefined)
+      newValues = stored.values; // TODO: Is this okay?
     // merge with immer
     else if (typeof setter === "function")
       newValues = { ...stored.values, value: produce(stored.values.value, setter as (draft: T) => void) };
@@ -198,10 +200,10 @@ export const createStore = () => {
     if (stored.values.promise) return;
 
     promise
-      .then((setter) => {
+      .then(setter => {
         _update({ key, setter, config: { ...config, clearPromise: true } });
       })
-      .catch((e) => {
+      .catch(e => {
         _update({ key, setter: undefined, config: { ...config, clearPromise: true, error: e } });
       });
 
@@ -283,10 +285,10 @@ export const createStore = () => {
     });
   };
 
-  const checkAll = () => store.forEach((stored) => _check({ stored }));
+  const checkAll = () => store.forEach(stored => _check({ stored }));
 
   const invalidateAll = () =>
-    store.forEach((stored) => {
+    store.forEach(stored => {
       stored.updatedAt = -1;
       _check({ stored });
     });
