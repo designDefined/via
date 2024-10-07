@@ -1,6 +1,6 @@
 import { H6 } from "@flexive/core";
 import { useView } from "viajs-react";
-import { TodosView } from "../../../core/feconf/view";
+import { TodosView } from "../../../deprecated/core/feconf/view";
 
 export default function TodoMessage() {
   const { value: todos } = useView({

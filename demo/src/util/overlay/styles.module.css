@@ -1,0 +1,43 @@
+.wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  z-index: 400; /* center */
+}
+.wrapper.click .Overlay,
+.wrapper.target .Overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.wrapper.center {
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: reveal 0.2s ease;
+}
+.wrapper.center.isBlurred {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(20px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: reveal 0.2s ease;
+}
+
+.absolute {
+  position: absolute;
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

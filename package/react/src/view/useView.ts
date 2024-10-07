@@ -14,7 +14,7 @@ export const useView = <T>({ view: { key, ...viewStatus }, ...overrideStatus }: 
     set(updater(view.value));
   }, [key, set, overrideStatus.updater, viewStatus.updater, view.value]);
 
-  if (!view.value) {
+  if (view.value === undefined) {
     if (view.promise) throw view.promise;
     throw view.error ?? new Error("unknown error from useView"); // TODO: Handle error
   }
