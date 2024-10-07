@@ -1,75 +1,64 @@
-import { Button, Div, Input, Main } from "@flexive/core";
-import { useIntentSubmit, useView } from "viajs-react";
-import { TestIntent, TestView } from "../../core/test";
+import { Button, Div, Input } from "@flexive/core";
+import { useIntentSubmit, useStoreSet, useView } from "viajs-react";
+import { TextView } from "../../core/view";
+import { TextIntent } from "../../core/intent";
+import { Overlay, useOverlay, useOverlayController } from "../../util/overlay";
+import { Suspense, useEffect } from "react";
 
 export default function Home() {
-  const { value: testView } = useView({ view: TestView() });
-  const {
-    state,
-    value: { required, optional1, optional2 },
-    isValid,
-    isModified,
-    set,
-    submit,
-    isWorking,
-    reset,
-  } = useIntentSubmit({
-    intent: TestIntent(),
-    initialSetter: testView,
-  });
-
-  console.log(state);
-  console.log({ required, optional1, optional2 });
+  const { overlay, open } = useOverlay({ type: "center" });
+  // const { value: prev } = useView({ view: TextView() });
 
   return (
-    <Main f={{ spacing: [16, 16] }}>
-      <Div f={{ spacing: [16] }}>
-        {isValid && <Div>valid</Div>}
-        {isModified && <Div>modified</Div>}
-      </Div>
-      <Div f={{ flow: ["row"], spacing: [16, 16] }}>
-        <Input value={required.value ?? ""} onChange={e => set({ required: e.target.value })} />
-        <Button onClick={() => set({ required: undefined })}>reset</Button>
-      </Div>
-      <Div f={{ flow: ["row"], spacing: [16, 16] }}>
-        <Input value={optional1.value ?? ""} onChange={e => set({ optional1: e.target.value })} />
-        <Button onClick={() => set({ optional1: undefined })}>reset</Button>
-      </Div>
-      <Div f={{ flow: ["row"], spacing: [16, 16] }}>
-        <Input
-          value={optional2.value ?? ""}
-          onChange={e => {
-            set(draft => {
-              draft.optional2 = e.target.value;
-            });
-          }}
-        />
-        <Button
-          onClick={() => {
-            set(draft => {
-              draft.optional2 = undefined;
-            });
-          }}
-        >
-          reset
-        </Button>
-      </Div>
-      <Button onClick={() => set({})}>nothing</Button>
-      <Button
-        onClick={() => {
-          reset();
-        }}
-      >
-        reset all
-      </Button>
-      <Button
-        disabled={!isValid || !isModified}
-        onClick={() => {
-          submit().then(alert);
-        }}
-      >
-        {isWorking ? "working" : "submit"}
-      </Button>
-    </Main>
+    <Div f={{ flow: ["row"], spacing: [0, 20] }}>
+      {/* {prev.length} */}
+      <Button onClick={() => open()}>open</Button>
+      <Reader />
+      <Setter />
+      <Overlay overlay={overlay}>
+        <Suspense>
+          <Modal />
+        </Suspense>
+      </Overlay>
+    </Div>
   );
+}
+
+function Modal() {
+  const { value: prev } = useView({ view: TextView() });
+  const { value: text, set, isModified, submit } = useIntentSubmit({ intent: TextIntent() });
+  const { close } = useOverlayController();
+  useEffect(() => {}, []);
+  return (
+    <Div
+      onClick={e => {
+        e.stopPropagation();
+      }}
+    >
+      <Input type="text" value={text.value ?? prev} onChange={e => set(e.target.value)} />
+      <Button disabled={!isModified} onClick={() => submit().then(() => close())}>
+        done
+      </Button>
+    </Div>
+  );
+}
+function Setter() {
+  const { set } = useStoreSet();
+
+  useEffect(() => {
+    console.log("set");
+    set({
+      key: TextView().key,
+      setter: "asdf",
+      config: { override: true },
+    });
+  }, []);
+
+  return null;
+}
+
+function Reader() {
+  const { value: text } = useView({ view: TextView() });
+  console.log(text);
+  return <Div>{text}</Div>;
 }

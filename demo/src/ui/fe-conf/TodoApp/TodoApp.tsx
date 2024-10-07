@@ -1,8 +1,8 @@
 import { Li, Div } from "@flexive/core";
 import { useIntent, useIntentSubmit, useView } from "viajs-react";
-import { Todo } from "../../../core/feconf/entity";
-import { AddTodoIntent, ToggleTodoIntent } from "../../../core/feconf/intent";
-import { TodosView } from "../../../core/feconf/view";
+import { Todo } from "../../../deprecated/core/feconf/entity";
+import { AddTodoIntent, ToggleTodoIntent } from "../../../deprecated/core/feconf/intent";
+import { TodosView } from "../../../deprecated/core/feconf/view";
 
 export default function TodoApp() {
   const { value: todos } = useView({
