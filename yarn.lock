@@ -1559,6 +1559,7 @@ __metadata:
     typescript: "npm:^5.5.3"
     vite: "npm:^5.4.8"
     vite-plugin-dts: "npm:^4.2.3"
+    xstate: "npm:^5.18.2"
   languageName: unknown
   linkType: soft
 
@@ -4860,6 +4861,13 @@ __metadata:
   version: 1.0.2
   resolution: "wrappy@npm:1.0.2"
   checksum: 10/159da4805f7e84a3d003d8841557196034155008f817172d4e986bd591f74aa82aa7db55929a54222309e01079a65a92a9e6414da5a6aa4b01ee44a511ac3ee5
+  languageName: node
+  linkType: hard
+
+"xstate@npm:^5.18.2":
+  version: 5.18.2
+  resolution: "xstate@npm:5.18.2"
+  checksum: 10/f0e0c68c35d14996eabee00a6485844f29d5bdb8407d6ec1be707e60b0f06952e7a765081ee338b0d5ac18a984c4debb6b08d6b2c5fefb1d44376930a1cc3c98
   languageName: node
   linkType: hard
 
