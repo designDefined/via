@@ -1,10 +1,14 @@
-import { getState } from "./store";
+import { subscribeState } from "./store";
 
-const app = document.getElementById("app")!;
-const { actor, subject } = getState<{ text: string }>({ key: "testStore" });
+const display = document.getElementById("display")!;
+// const input = document.getElementById("input")! as HTMLInputElement;
+// const saveButton = document.getElementById("save-button")!;
+const alertButton = document.getElementById("alert-button")!;
+const { dispatch, subscribe, getSnapshot } = subscribeState<{ text: string }>({ key: "testStore" });
 
-subject.subscribe(value => {
-  app.innerText = value.context.value?.text ?? "";
+subscribe(value => {
+  display.innerText = value.context.value?.text ?? "";
 });
 
-setTimeout(() => actor.send({ type: "value.initialized", value: { text: "test text" } }), 5000);
+alertButton.addEventListener("click", () => alert(getSnapshot().context.value?.text ?? "no text"));
+setTimeout(() => dispatch({ type: "value.initialized", value: { text: "test text" } }), 2000);
