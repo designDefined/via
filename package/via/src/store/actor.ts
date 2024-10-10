@@ -1,36 +1,42 @@
-import { assign, createActor, createMachine, MachineTypes, setup, SnapshotFrom } from "xstate";
-import { AnyKey, Key } from "./key";
-import { Subject } from "rxjs";
+import { setup, assign, createActor } from "xstate";
+import { Key } from "./key";
+import { Initializer, Updater } from "./setter";
 
-type CreateStoreParams = {
-  key: AnyKey;
+// core types
+type Context<Value> = {
+  value?: Value;
+  promise?: Promise<Value>;
+  error: unknown;
+  initializer?: Initializer<Value>;
+  updater?: Updater<Value>;
+  staleTime?: number;
+  gcTimer?: number;
 };
 
-export const createStore = <T>({ key: _key }: CreateStoreParams) => {
-  // initialize config
-  const key = Key.parse(_key);
+type Event<Value> =
+  | { type: "value.initialized"; value: Value }
+  | { type: "value.requested"; promise: Promise<Value> }
+  | { type: "value.thrown"; error: unknown }
+  | { type: "value.retried" }
+  | { type: "value.invalidated"; promise: Promise<Value> }
+  | { type: "value.updateRequested"; promise: Promise<Value> }
+  | { type: "request.fulfilled"; value: Value }
+  | { type: "request.rejected"; error: unknown }
+  | { type: "updateRequest.fulfilled"; value: Value }
+  | { type: "updateRequest.rejected"; error: unknown };
 
-  // setup machine
+// createStateActor
+type CreateStateActorParams<Value> = {
+  key: Key;
+  initalizer?: Initializer<Value>;
+  updater?: Updater<Value>;
+};
+
+export const createStateActor = <T>({ key, initalizer, updater }: CreateStateActorParams<T>) => {
   const machine = setup({
     types: {
-      context: {} as {
-        value?: T;
-        promise?: Promise<T>;
-        error: unknown;
-        staleTime?: number;
-        gcTimer?: number;
-      },
-      events: {} as
-        | { type: "value.initialized"; value: T }
-        | { type: "value.requested"; promise: Promise<T> }
-        | { type: "value.thrown"; error: unknown }
-        | { type: "value.retried" }
-        | { type: "value.invalidated"; promise: Promise<T> }
-        | { type: "value.updateRequested"; promise: Promise<T> }
-        | { type: "request.fulfilled"; value: T }
-        | { type: "request.rejected"; error: unknown }
-        | { type: "updateRequest.fulfilled"; value: T }
-        | { type: "updateRequest.rejected"; error: unknown },
+      context: {} as Context<T>,
+      events: {} as Event<T>,
     },
   }).createMachine({
     context: {
@@ -38,6 +44,8 @@ export const createStore = <T>({ key: _key }: CreateStoreParams) => {
       promise: undefined,
       value: undefined,
       error: undefined,
+      initializer: initalizer,
+      updater: updater,
     },
     id: key,
     initial: "empty",
@@ -120,15 +128,7 @@ export const createStore = <T>({ key: _key }: CreateStoreParams) => {
   });
 
   const actor = createActor(machine);
-
-  // setup subject
-  const subject = new Subject<SnapshotFrom<typeof machine>>();
-
-  actor.subscribe(snapshot => {
-    subject.next(snapshot);
-  });
-
-  // start
-  actor.start();
-  return { key, actor, subject };
+  return actor;
 };
+
+export type StateActor<Value> = ReturnType<typeof createStateActor<Value>>;
