@@ -1,14 +1,16 @@
-import { subscribeState } from "./store";
+import { map } from "rxjs";
+import { fetchState } from "./store";
 
 const display = document.getElementById("display")!;
 // const input = document.getElementById("input")! as HTMLInputElement;
 // const saveButton = document.getElementById("save-button")!;
 const alertButton = document.getElementById("alert-button")!;
-const { dispatch, subscribe, getSnapshot } = subscribeState<{ text: string }>({ key: "testStore" });
 
-subscribe(value => {
-  display.innerText = value.context.value?.text ?? "";
+const [text, dispatch] = fetchState<{ text: string }>({ key: "text" });
+
+text.pipe(map(snapshot => snapshot.context)).subscribe(ctx => {
+  display.innerText = ctx.value?.text ?? "";
 });
 
-alertButton.addEventListener("click", () => alert(getSnapshot().context.value?.text ?? "no text"));
+alertButton.addEventListener("click", () => alert(text.getValue() ?? "no text"));
 setTimeout(() => dispatch({ type: "value.initialized", value: { text: "test text" } }), 2000);

@@ -1,13 +1,13 @@
 import { setup, assign, createActor } from "xstate";
 import { Key } from "./key";
-import { Initializer, Updater } from "./setter";
+import { Init, Updater } from "./initAndUpdate";
 
 // core types
 type Context<Value> = {
   value?: Value;
   promise?: Promise<Value>;
   error: unknown;
-  initializer?: Initializer<Value>;
+  init?: Init<Value>;
   updater?: Updater<Value>;
   staleTime?: number;
   gcTimer?: number;
@@ -28,11 +28,11 @@ type Event<Value> =
 // createStateActor
 type CreateStateActorParams<Value> = {
   key: Key;
-  initalizer?: Initializer<Value>;
+  init?: Init<Value>;
   updater?: Updater<Value>;
 };
 
-export const createStateActor = <T>({ key, initalizer, updater }: CreateStateActorParams<T>) => {
+export const createStateActor = <T>({ key, init, updater }: CreateStateActorParams<T>) => {
   const machine = setup({
     types: {
       context: {} as Context<T>,
@@ -44,7 +44,7 @@ export const createStateActor = <T>({ key, initalizer, updater }: CreateStateAct
       promise: undefined,
       value: undefined,
       error: undefined,
-      initializer: initalizer,
+      init: init,
       updater: updater,
     },
     id: key,

@@ -1,4 +1,4 @@
-import { BehaviorSubject, Subject } from "rxjs";
+import { BehaviorSubject } from "rxjs";
 import { SnapshotFrom } from "xstate";
 import { StateActor } from "./actor";
 
