@@ -9,7 +9,7 @@
   "scripts": {
     "demo": "yarn workspace demo",
     "via": "yarn workspace @viable/via",
-    "react": "yarn workspace viajs-react",
+    "via-react": "yarn workspace @viable/via-react",
     "build": "yarn core build && yarn react build && yarn demo build",
     "build:lib": "yarn core build && yarn react build"
   },
