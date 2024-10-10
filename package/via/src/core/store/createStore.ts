@@ -1,12 +1,16 @@
-import { assign, createActor, createMachine, MachineTypes, setup } from "xstate";
+import { assign, createActor, createMachine, MachineTypes, setup, SnapshotFrom } from "xstate";
 import { AnyKey, Key } from "./key";
+import { Subject } from "rxjs";
 
 type CreateStoreParams = {
   key: AnyKey;
 };
 
 export const createStore = <T>({ key: _key }: CreateStoreParams) => {
+  // initialize config
   const key = Key.parse(_key);
+
+  // setup machine
   const machine = setup({
     types: {
       context: {} as {
@@ -117,12 +121,14 @@ export const createStore = <T>({ key: _key }: CreateStoreParams) => {
 
   const actor = createActor(machine);
 
-  actor.subscribe(({ value, context }) => {
-    console.log(value);
-    console.log(context);
+  // setup subject
+  const subject = new Subject<SnapshotFrom<typeof machine>>();
+
+  actor.subscribe(snapshot => {
+    subject.next(snapshot);
   });
 
+  // start
   actor.start();
-
-  return { key, actor };
+  return { key, actor, subject };
 };
