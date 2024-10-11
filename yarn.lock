@@ -1915,11 +1915,13 @@ __metadata:
     eslint-plugin-react-hooks: "npm:^5.1.0-rc.0"
     eslint-plugin-react-refresh: "npm:^0.4.12"
     globals: "npm:^15.9.0"
+    rxjs: "npm:^7.8.1"
     typescript: "npm:^5.5.3"
     typescript-eslint: "npm:^8.7.0"
     vite: "npm:^5.4.8"
     vite-plugin-dts: "npm:^4.2.3"
   peerDependencies:
+    "@viable/via": ">=1.0.0"
     react: ">=18.0.0"
     react-dom: ">=18.0.0"
   languageName: unknown
