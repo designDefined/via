@@ -4102,7 +4102,7 @@ __metadata:
   peerDependencies:
     react: ">=18.0.0"
     react-dom: ">=18.0.0"
-    viajs-core: ">=0.3.0"
+    viajs-core: ">=0.3.1"
   languageName: unknown
   linkType: soft
 

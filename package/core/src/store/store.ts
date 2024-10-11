@@ -308,4 +308,4 @@ export const createStore = () => {
 };
 
 export type Store = ReturnType<typeof createStore>;
-export type Next = (store: Store) => void;
+export type Next = (store: Store) => void | Promise<void>;
