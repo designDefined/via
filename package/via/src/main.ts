@@ -1,5 +1,6 @@
 // import { map } from "rxjs";
 import { createState } from "./state";
+import { View } from "./view/view";
 
 const textDisplay = document.getElementById("textDisplay")!;
 const answerDisplay = document.getElementById("answerDisplay")!;
@@ -29,3 +30,31 @@ answerState.subject.subscribe(snapshot => {
 
 saveButton.addEventListener("click", () => textState.actor.send({ type: "set", value: { text: input.value } }));
 alertButton.addEventListener("click", () => alert(answerState.subject.getValue().value?.answerText ?? "loading..."));
+
+const numberView = View<[string], { name: string; value: number }>(name => ({
+  key: ["number", name],
+  from: () => ({ name, value: 42 }),
+}));
+
+numberView("test").subscribe(({ state, value }) => {
+  console.log(state, value);
+});
+
+numberView("test")
+  .from(() => ({ name: "over1", value: 43 }))
+  .subscribe(({ state, value }) => {
+    console.log(state, value);
+  });
+
+numberView("test2")
+  .from(() => ({ name: "over2", value: 44 }))
+  .subscribe(({ state, value }) => {
+    console.log(state, value);
+  });
+
+setTimeout(() => {
+  numberView("test").subscribe(({ state, value }) => {
+    console.log("subscribe after 1000ms");
+    console.log(state, value);
+  });
+}, 1000);
