@@ -1,6 +1,6 @@
 import { BehaviorSubject } from "rxjs";
 import { AsyncronousActor, createAsyncActor, createSyncActor, SyncronousActor } from "./actor";
-import { AsyncronousFrom, From, SyncronousFrom } from "./type";
+import { AsyncronousFrom, From, SyncronousFrom } from "./from";
 import { isPromise } from "../utility/isPromise";
 import { SnapshotFrom } from "xstate";
 

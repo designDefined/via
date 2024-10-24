@@ -22,13 +22,9 @@ const hashKey = (target: RawKey | Falsy) => {
 const hashKeys = (targets: (RawKey | Falsy)[]) =>
   targets.filter(target => !isFalsy(target)).reduce((acc: string, target) => acc + "_" + hashKey(target), "");
 
-const parse = (key: AnyKey): Key => {
+const parseKey = (key: AnyKey): Key => {
   if (Array.isArray(key)) return hashKeys(key);
   return hashKey(key);
 };
 
-export const Key = {
-  hashKey,
-  hashKeys,
-  parse,
-};
+export { parseKey };

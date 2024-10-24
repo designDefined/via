@@ -1,5 +1,5 @@
 import { setup, assign, createActor, fromPromise } from "xstate";
-import { AsyncronousFrom, SyncronousFrom } from "./type";
+import { AsyncronousFrom, SyncronousFrom } from "./from";
 
 // syncronous
 type SyncronousContext<Value> = {
