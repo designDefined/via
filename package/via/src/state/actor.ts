@@ -1,9 +1,8 @@
 import { setup, assign, createActor, fromPromise } from "xstate";
-import { AsyncronousFrom, SyncronousFrom } from "./from";
 
 // syncronous
 type SyncronousContext<Value> = {
-  from: SyncronousFrom<Value>;
+  from: () => Value;
   value: Value;
 };
 type SyncronousEvent<Value> = { type: "set"; value: Value };
@@ -14,7 +13,7 @@ export const createSyncActor = <Value>({
   initialValue,
 }: {
   id: string;
-  from: SyncronousFrom<Value>;
+  from: () => Value;
   initialValue: Value;
 }) => {
   const machine = setup({
@@ -42,7 +41,7 @@ export type SyncronousActor<T> = ReturnType<typeof createSyncActor<T>>;
 
 // asyncronous
 type AsyncronousContext<Value> = {
-  from: AsyncronousFrom<Value>;
+  from: () => Promise<Value>;
   value?: Value;
   promise?: Promise<Value>;
   error?: unknown;
@@ -56,7 +55,7 @@ export const createAsyncActor = <T>({
   initialValue,
 }: {
   id: string;
-  from: AsyncronousFrom<T>;
+  from: () => Promise<T>;
   initialValue: Promise<T>;
 }) => {
   const machine = setup({

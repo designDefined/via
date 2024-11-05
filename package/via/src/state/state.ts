@@ -1,7 +1,6 @@
 import { BehaviorSubject } from "rxjs";
 import { AsyncronousActor, createAsyncActor, createSyncActor, SyncronousActor } from "./actor";
-import { AsyncronousFrom, From, SyncronousFrom } from "./from";
-import { isPromise } from "../utility/isPromise";
+import { isPromise } from "../common/promise";
 import { SnapshotFrom } from "xstate";
 
 // core types
@@ -20,6 +19,7 @@ export type AsyncronousState<T> = {
   subject: BehaviorSubject<AsyncronousSnapshot<T>>;
 };
 export type State<T> = SyncronousState<T> | AsyncronousState<T>;
+export type InferredState<T> = T extends Promise<infer U> ? AsyncronousState<U> : SyncronousState<T>;
 
 // syncronous
 const mapSyncSnapshot = <Value>(actorSnapshot: SnapshotFrom<SyncronousActor<Value>>): SyncronousSnapshot<Value> => ({
@@ -28,13 +28,13 @@ const mapSyncSnapshot = <Value>(actorSnapshot: SnapshotFrom<SyncronousActor<Valu
   promise: undefined,
   error: undefined,
 });
-const createSyncState = <Value>({
+export const createSyncState = <Value>({
   id,
   from,
   initialValue,
 }: {
   id: string;
-  from: SyncronousFrom<Value>;
+  from: () => Value;
   initialValue: Value;
 }): SyncronousState<Value> => {
   const actor = createSyncActor({ id, from, initialValue: initialValue });
@@ -54,15 +54,15 @@ const mapAsyncSnapshot = <Value>(actorSnapshot: SnapshotFrom<AsyncronousActor<Va
     error: actorSnapshot.context.error,
   }) as AsyncronousSnapshot<Value>;
 
-const createAsyncState = <Value>({
+export const createAsyncState = <Value>({
   id,
   from,
   initialValue,
 }: {
   id: string;
-  from: AsyncronousFrom<Value>;
+  from: () => Promise<Value>;
   initialValue: Promise<Value>;
-}) => {
+}): AsyncronousState<Value> => {
   const actor = createAsyncActor({ id, from, initialValue });
   const subject = new BehaviorSubject<AsyncronousSnapshot<Value>>(mapAsyncSnapshot(actor.getSnapshot()));
   actor.subscribe(s => subject.next(mapAsyncSnapshot(s)));
@@ -71,11 +71,10 @@ const createAsyncState = <Value>({
 };
 
 // api
-export const createState = <Value>({ id, from }: { id: string; from: From<Value> }) => {
-  const initialValue = from();
+export const createState = <T>({ id, from, initialValue }: { id: string; from: () => T; initialValue: T }) => {
   return (
     isPromise(initialValue)
-      ? createAsyncState({ id, from: from as AsyncronousFrom<Value>, initialValue })
-      : createSyncState({ id, from: from as SyncronousFrom<Value>, initialValue })
-  ) as ReturnType<typeof from> extends Promise<unknown> ? AsyncronousState<Value> : SyncronousState<Value>;
+      ? createAsyncState({ id, from: from as () => Promise<unknown>, initialValue })
+      : createSyncState({ id, from, initialValue })
+  ) as InferredState<T>;
 };

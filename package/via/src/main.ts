@@ -8,17 +8,21 @@ const alertButton = document.getElementById("alert-button")!;
 const input = document.getElementById("input")! as HTMLInputElement;
 const saveButton = document.getElementById("save-button")!;
 
-const textState = createState<{ text: string }>({
+const textState = createState({
   id: "text",
   from: () => ({ text: "hello world" }),
+  initialValue: { text: "hello world" },
 });
 
-const answerState = createState<{ answerText: string }>({
+const answerState = createState({
   id: "answer",
   from: () =>
-    new Promise(res => {
+    new Promise<{ answerText: string }>(res => {
       setTimeout(() => res({ answerText: "42" }), 2000);
     }),
+  initialValue: new Promise<{ answerText: string }>(res => {
+    setTimeout(() => res({ answerText: "42" }), 2000);
+  }),
 });
 
 textState.subject.subscribe(snapshot => {
@@ -40,17 +44,17 @@ numberView("test").subscribe(({ state, value }) => {
   console.log(state, value);
 });
 
-numberView("test")
-  .from(() => ({ name: "over1", value: 43 }))
-  .subscribe(({ state, value }) => {
+numberView("test").subscribe(
+  ({ state, value }) => {
     console.log(state, value);
-  });
+  },
+  () => ({ name: "over1", value: 43 }),
+);
 
-numberView("test2")
-  .from(() => ({ name: "over2", value: 44 }))
-  .subscribe(({ state, value }) => {
-    console.log(state, value);
-  });
+View(() => ({ key: ["new"] }))().subscribe(
+  ({ state, value }) => console.log(state, value),
+  () => Promise.resolve({ name: "over2", value: 44 }),
+);
 
 setTimeout(() => {
   numberView("test").subscribe(({ state, value }) => {
