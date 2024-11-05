@@ -44,17 +44,11 @@ numberView("test").subscribe(({ state, value }) => {
   console.log(state, value);
 });
 
-numberView("test").subscribe(
-  ({ state, value }) => {
-    console.log(state, value);
-  },
-  () => ({ name: "over1", value: 43 }),
-);
+numberView("test").subscribe(({ state, value }) => {
+  console.log(state, value);
+});
 
-View(() => ({ key: ["new"] }))().subscribe(
-  ({ state, value }) => console.log(state, value),
-  () => Promise.resolve({ name: "over2", value: 44 }),
-);
+View(() => ({ key: ["new"] }))().subscribe(({ state, value }) => console.log(state, value));
 
 setTimeout(() => {
   numberView("test").subscribe(({ state, value }) => {
