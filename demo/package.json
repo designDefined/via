@@ -11,12 +11,13 @@
   },
   "dependencies": {
     "@flexive/core": "^0.4.8",
+    "@viable/via": "workspace:^",
+    "@viable/via-react": "workspace:^",
+    "ky": "^1.7.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-highlight": "^0.15.0",
     "react-router-dom": "^6.27.0",
-    "viajs-core": "workspace:^",
-    "viajs-react": "workspace:^",
     "zod": "^3.23.8"
   },
   "devDependencies": {

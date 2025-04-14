@@ -8,6 +8,12 @@ export type UseStoreParams<T> = StoredInfo<T> & { value?: T };
 type Get<T, Slice> = [StoredValues<Slice>, StoredInfo<T>];
 type Set<T> = (setter: Setter<T> | Promise<Setter<T>>, config?: SetterConfig) => void;
 
+export function A(a: Promise<number>): string;
+export function A(b: number): number;
+export function A() {
+  return "42" as string | number;
+}
+
 export const useStore = <T>({ key, ...params }: UseStoreParams<T>): [Get<T, T>, Set<T>, Store] => {
   const store = useStoreContext();
   const subscriptionKey = useRef(nanoid()); // subscriptionKey remains same throughout the lifecycle of the component.

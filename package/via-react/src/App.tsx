@@ -1,12 +1,21 @@
-import { fetchState } from "@viable/via";
-import { useSubscribedState } from "./store/useStoreState";
-import { map } from "rxjs";
+import { Suspense } from "react";
 
-const [TestSubject] = fetchState<{ text: string }>({ key: "test", init: () => ({ text: "start!" }) });
+const Test = () => {
+  throw new Promise(res => {
+    setTimeout(() => res("42"), 2000);
+  });
+
+  return <div>test</div>;
+};
 
 function App() {
-  const test = useSubscribedState({ key: "test", subject: TestSubject.pipe(map(({ context }) => context)) });
-  return <div>app</div>;
+  return (
+    <div>
+      <Suspense fallback={<div>fallback</div>}>
+        <Test />
+      </Suspense>
+    </div>
+  );
 }
 
 export default App;

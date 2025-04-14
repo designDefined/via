@@ -48,8 +48,6 @@ numberView("test").subscribe(({ state, value }) => {
   console.log(state, value);
 });
 
-View(() => ({ key: ["new"] }))().subscribe(({ state, value }) => console.log(state, value));
-
 setTimeout(() => {
   numberView("test").subscribe(({ state, value }) => {
     console.log("subscribe after 1000ms");

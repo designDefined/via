@@ -1,32 +1,36 @@
 import { InferredSnapshot } from "../state";
-import { AnyKey, getStore, parseKey } from "../store";
+import { AnyKey, getStore, Getter, parseKey, Store } from "../store";
 
 export const View =
-  <Deps extends unknown[], T>(builder: (...deps: Deps) => { key: AnyKey; from?: () => T }) =>
+  <Deps extends unknown[], T>(builder: (...deps: Deps) => { key: AnyKey; from: () => T }) =>
   (...deps: Deps) => {
-    const subscribe = (
-      subscriber: { next?: (s: InferredSnapshot<T>) => void; from?: () => T } | ((s: InferredSnapshot<T>) => void),
-    ) => {
-      const { key: _key, from: _from } = builder(...deps);
-      const key = parseKey(_key);
-      const { next, from: fromOverride } =
-        typeof subscriber === "function" ? { next: subscriber, from: undefined } : subscriber;
-      const from = fromOverride ?? _from;
-      if (!from) throw new Error(`View ${key} must have a from function.`);
+    const { key: _key, from } = builder(...deps);
+    const getter: Getter<T> = { key: parseKey(_key), from };
 
-      const store = getStore();
-      const state = store.getState(key, from);
-      const subscription = state.subject.subscribe({ next } as any);
+    const getValue = (store?: Store) =>
+      getStore(store).read(getter.key)?.subject.getValue()?.value as Awaited<T> | undefined;
+    const getSnapshot = (store?: Store) => getStore(store).getState(getter).subject.getValue() as InferredSnapshot<T>;
+
+    const subscribe = (
+      subscriber: { next?: (s: InferredSnapshot<T>) => void } | ((s: InferredSnapshot<T>) => void),
+      storeOverride?: Store,
+    ) => {
+      const store = getStore(storeOverride);
+      const next = typeof subscriber === "function" ? subscriber : subscriber.next;
+      const { subject } = store.getState(getter);
+      const subscription = subject.subscribe({ next } as any);
       // state.actor.send({ type: "subscribe" });
       return () => {
         subscription.unsubscribe();
         // state.actor.send({ type: "unsubscribe" });
-        if (!state.subject.observed) {
+        if (!subject.observed) {
           // state.actor.send({ type: "unsubscribeAll" });
-          store.remove(key);
+          store.remove(getter.key);
         }
       };
     };
 
-    return { subscribe };
+    return { key: getter.key, getValue, getSnapshot, subscribe };
   };
+
+export type View<T> = ReturnType<ReturnType<typeof View<[], T>>>;
